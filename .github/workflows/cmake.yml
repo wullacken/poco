@@ -1,11 +1,11 @@
 name: CMake
 
 on:
-  push:
-    branches: [ "devel" ]
-  pull_request:
-    branches: [ "devel" ]
-
+  workflow_dispatch
+    
+env:
+  ANDROID_NDK_VERSION: '25.1.8937393'
+  ANDROID_CMAKE_VERSION: '3.22.1'
 
 jobs:
   build_linux:
@@ -69,5 +69,56 @@ jobs:
           build/lib/**
           Foundation/include/**
           Util/include/**
+          
+          
+
+  build_android:
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        BUILD_TYPE: [Release]
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v3
+      with:
+         distribution: "zulu"
+         java-version: 11
+
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v2
+      
+    - name: Cache NDK
+      id: ndk-cache
+      uses: actions/cache@v2
+      with:
+        path: /usr/local/lib/android/sdk/ndk
+        key: ${{ runner.os }}-NdkCache-${{ env.ANDROID_NDK_VERSION }}
+        
+    - name: Install Android SDK dependencies, configure and build
+      run: |
+        echo y | sdkmanager "ndk;${{ env.ANDROID_NDK_VERSION }}"
+        echo y | sdkmanager "cmake;${{ env.ANDROID_CMAKE_VERSION }}"
+        CMAKE_PATH=${ANDROID_SDK_ROOT}/cmake/${{ env.ANDROID_CMAKE_VERSION }}
+        export PATH=${CMAKE_PATH}/bin:$PATH
+        export NINJA_EXE=${CMAKE_PATH}/bin/ninja
+        export ANDROID_NDK=${ANDROID_SDK_ROOT}/ndk/${{ env.ANDROID_NDK_VERSION }}
+        export ANDROID_TOOLCHAIN_FILE=${ANDROID_NDK}/build/cmake/android.toolchain.cmake
+        ${CMAKE_PATH}/bin/cmake -B ${{github.workspace}}/build -G Ninja -DPOCO_ANDROID=ON -DPOCO_NO_FPENVIRONMENT=ON -DPOCO_NO_WSTRING=ON -DPOCO_NO_SHAREDMEMORY=ON -DCMAKE_MAKE_PROGRAM=${NINJA_EXE} -DCMAKE_TOOLCHAIN_FILE=${ANDROID_TOOLCHAIN_FILE} -DANDROID_NATIVE_API_LEVEL=26 -DANDROID_ABI=arm64-v8a -DCMAKE_BUILD_TYPE=${{matrix.BUILD_TYPE}} -DENABLE_XML=OFF -DENABLE_JSON=OFF -DENABLE_MONGODB=OFF -DENABLE_DATA_SQLITE=OFF -DENABLE_REDIS=OFF -DENABLE_PROMETHEUS=OFF -DENABLE_PDF=OFF -DENABLE_NET=OFF -DENABLE_ZIP=OFF -DENABLE_PAGECOMPILER=OFF -DENABLE_PAGECOMPILER_FILE2PAGE=OFF -DENABLE_ACTIVERECORD=OFF -DENABLE_ACTIVERECORD_COMPILER=OFF -DENABLE_DATA=OFF -DENABLE_DATA_ODBC=OFF -DENABLE_DATA_POSTGRESQL=OFF -DENABLE_DATA_MYSQL=OFF -DENABLE_APACHECONNECTOR=OFF -DENABLE_NETSSL=OFF -DENABLE_CRYPTO=OFF -DENABLE_JWT=OFF -DENABLE_ENCODINGS=OFF
+        ${CMAKE_PATH}/bin/cmake --build ${{github.workspace}}/build --config ${{matrix.BUILD_TYPE}}
+        
+    - uses: actions/upload-artifact@v3
+      with:
+        name: pocolib_android_${{matrix.BUILD_TYPE}}
+        path: |
+          build/lib/**
+          Foundation/include/**
+          Util/include/**
+        
+        
+        
+        
+        
 
 
