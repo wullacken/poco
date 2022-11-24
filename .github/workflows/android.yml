@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [ "devel" ]
 env:
-  ANDROID_NDK_VERSION: '25.0.8775105'
+  ANDROID_NDK_VERSION: '25.1.8937393'
   ANDROID_CMAKE_VERSION: '3.22.1'
 
 jobs:
