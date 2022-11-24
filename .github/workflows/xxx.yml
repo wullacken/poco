@@ -1,0 +1,41 @@
+
+name: xxx
+
+on:
+  workflow_dispatch
+    
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  build_linux:
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        BUILD_TYPE: [Release]
+    steps:
+    - uses: actions/checkout@v3
+    - name: Configure CMake
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{matrix.BUILD_TYPE}} -DENABLE_XML=OFF -DENABLE_JSON=OFF -DENABLE_MONGODB=OFF -DENABLE_DATA_SQLITE=OFF -DENABLE_REDIS=OFF -DENABLE_PROMETHEUS=OFF -DENABLE_PDF=OFF -DENABLE_NET=OFF -DENABLE_ZIP=OFF -DENABLE_PAGECOMPILER=OFF -DENABLE_PAGECOMPILER_FILE2PAGE=OFF -DENABLE_ACTIVERECORD=OFF -DENABLE_ACTIVERECORD_COMPILER=OFF -DENABLE_DATA=OFF -DENABLE_DATA_ODBC=OFF -DENABLE_DATA_POSTGRESQL=OFF -DENABLE_DATA_MYSQL=OFF -DENABLE_APACHECONNECTOR=OFF -DENABLE_NETSSL=OFF -DENABLE_CRYPTO=OFF -DENABLE_JWT=OFF -DENABLE_ENCODINGS=OFF
+ 
+    - name: Build
+      run: cmake --build ${{github.workspace}}/build --config ${{matrix.BUILD_TYPE}}
+      
+    - uses: actions/upload-artifact@v3
+      with:
+        name: pocolib_linux_x64_${{matrix.BUILD_TYPE}}
+        path: |
+          build/lib/**
+          Foundation/include/**
+          Util/include/**
+    - name: maven
+      run: |
+        mvn deploy:deploy-file -DgroupId=eu.filekeep \
+        -DartifactId=pocolib_linux_x64_${{matrix.BUILD_TYPE}} \
+        -Dversion=<version> \
+        -Dpackaging=zip \
+        -Dfile=<path-to-file> \
+        -DrepositoryId=<id-to-map-on-server-section-of-settings.xml> \
+        -Durl=<url-of-the-repository-to-deploy>
+        
+        
