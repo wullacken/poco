@@ -47,7 +47,7 @@ jobs:
         
     - name: maven
       run: |
-        mvn deploy:deploy-file -DgroupId=eu.filekeep -DartifactId=${{env.artifact}} -Dversion=${GITHUB_RUN_NUMBER} -Dpackaging=zip -Dfile=${{env.artifact}} -DrepositoryId=github -Durl=https://maven.pkg.github.com/wullacken/poco_linux
+        mvn deploy:deploy-file -DgroupId=eu.filekeep -DartifactId=${{env.artifact}} -Dversion=${GITHUB_RUN_NUMBER} -Dpackaging=zip -Dfile=${{env.artifact}}.zip -DrepositoryId=github -Durl=https://maven.pkg.github.com/wullacken/poco_linux
 
 
         
