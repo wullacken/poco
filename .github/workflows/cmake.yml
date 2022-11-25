@@ -18,7 +18,7 @@ jobs:
     steps:
     
     - name: lowercase artifact suffix
-    - shell: bash
+      shell: bash
       run: |
         artifact_suffix=${{matrix.BUILD_TYPE}}
         artifact_suffix=$(echo $artifact_suffix | tr '[:upper:]' '[:lower:]')
@@ -70,7 +70,7 @@ jobs:
     steps:
     
     - name: lowercase artifact suffix
-    - shell: bash
+      shell: bash
       run: |
         artifact_suffix=${{matrix.BUILD_TYPE}}
         artifact_suffix=$(echo $artifact_suffix | tr '[:upper:]' '[:lower:]')
@@ -110,7 +110,7 @@ jobs:
         distribution: 'zulu'
         
     - name: maven
-    - shell: bash
+      shell: bash
       run: |
         mvn deploy:deploy-file -DgroupId=eu.filekeep -DartifactId=${{env.windows_artifact}} -Dversion=${GITHUB_RUN_NUMBER} -Dfile=${{env.windows_artifact}}.tar.gz -DrepositoryId=github -Durl=https://maven.pkg.github.com/wullacken/poco -Dpackaging=tar.gz
           
@@ -124,7 +124,7 @@ jobs:
     steps:
     
     - name: lowercase artifact suffix
-    - shell: bash
+      shell: bash
       run: |
         artifact_suffix=${{matrix.BUILD_TYPE}}
         artifact_suffix=$(echo $artifact_suffix | tr '[:upper:]' '[:lower:]')
@@ -177,7 +177,7 @@ jobs:
     steps:
     
     - name: lowercase artifact suffix
-    - shell: bash
+      shell: bash
       run: |
         artifact_suffix=${{matrix.BUILD_TYPE}}
         artifact_suffix=$(echo $artifact_suffix | tr '[:upper:]' '[:lower:]')
@@ -202,7 +202,7 @@ jobs:
         key: ${{ runner.os }}-NdkCache-${{ env.ANDROID_NDK_VERSION }}
         
     - name: Install Android SDK dependencies, configure and build
-    - shell: bash
+      shell: bash
       run: |
         echo y | sdkmanager "ndk;${{ env.ANDROID_NDK_VERSION }}"
         echo y | sdkmanager "cmake;${{ env.ANDROID_CMAKE_VERSION }}"
