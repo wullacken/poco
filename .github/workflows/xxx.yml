@@ -25,14 +25,20 @@ jobs:
     - name: Build
       run: cmake --build ${{github.workspace}}/build --config ${{matrix.BUILD_TYPE}}
      
+    - shell: bash
+      run: |
+        mkdir ${{env.artifact}}
+        mkdir ${{env.artifact}}/Foundation
+        mkdir ${{env.artifact}}/Util
+        cp -r build/lib ${{env.artifact}}
+        cp -r Foundation/include ${{env.artifact}}/Foundation
+        cp -r Util/include ${{env.artifact}}/Util
+        tar cvzf ${{env.artifact}}.tar.gz ${{env.artifact}}
       
     - uses: actions/upload-artifact@v3
       with:
         name: ${{env.artifact}}
-        path: |
-          build/lib/**
-          Foundation/include/**
-          Util/include/**
+        path: ${{env.artifact}}.tar.gz
           
           
     - uses: actions/download-artifact@v3
@@ -47,7 +53,7 @@ jobs:
         
     - name: maven
       run: |
-        mvn deploy:deploy-file -DgroupId=eu.filekeep -DartifactId=${{env.artifact}} -Dversion=${GITHUB_RUN_NUMBER} -Dpackaging=zip -Dfile=${{env.artifact}}.zip -DrepositoryId=github -Durl=https://maven.pkg.github.com/wullacken/poco_linux
+        mvn deploy:deploy-file -DgroupId=eu.filekeep -DartifactId=${{env.artifact}} -Dversion=${GITHUB_RUN_NUMBER} -Dfile=${{env.artifact}}.tar.gz -DrepositoryId=github -Durl=https://maven.pkg.github.com/wullacken/poco_linux
 
 
         
