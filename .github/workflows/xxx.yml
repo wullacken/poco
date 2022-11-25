@@ -13,6 +13,10 @@ jobs:
     strategy:
       matrix:
         BUILD_TYPE: [Release]
+        
+    env:
+      artifact: pocolib_linux_x64_${{matrix.BUILD_TYPE}}
+        
     steps:
     - uses: actions/checkout@v3
     - name: Configure CMake
@@ -20,25 +24,31 @@ jobs:
  
     - name: Build
       run: cmake --build ${{github.workspace}}/build --config ${{matrix.BUILD_TYPE}}
-      
-    - name: maven
-      run: |
-        mvn deploy:deploy-file -DgroupId=eu.filekeep \
-        -DartifactId=pocolib_linux_x64_${{matrix.BUILD_TYPE}} \
-        -Dversion=<version> \
-        -Dpackaging=zip \
-        -Dfile=<path-to-file> \
-        -DrepositoryId=<id-to-map-on-server-section-of-settings.xml> \
-        -Durl=<url-of-the-repository-to-deploy>
-      
+     
       
     - uses: actions/upload-artifact@v3
       with:
-        name: pocolib_linux_x64_${{matrix.BUILD_TYPE}}
+        name: ${{env.artifact}}
         path: |
           build/lib/**
           Foundation/include/**
           Util/include/**
+          
+          
+    - uses: actions/download-artifact@v3
+      with:
+        name: ${{env.artifact}}
+        
+      
+    - uses: actions/setup-java@v3zh
+      with:
+        java-version: '11'
+        distribution: 'zulu'
+        
+    - name: maven
+      run: |
+        mvn deploy:deploy-file -DgroupId=eu.filekeep -DartifactId=${{env.artifact}} -Dversion=${GITHUB_RUN_NUMBER} -Dpackaging=zip -Dfile=${{env.artifact}} -DrepositoryId=github -Durl=https://maven.pkg.github.com/wullacken/poco_linux
+
 
         
         
