@@ -6,6 +6,8 @@ on:
 env:
   ANDROID_NDK_VERSION: '25.1.8937393'
   ANDROID_CMAKE_VERSION: '3.22.1'
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
 jobs:
   build_linux:
@@ -14,19 +16,53 @@ jobs:
       matrix:
         BUILD_TYPE: [Release,Debug]
     steps:
+    
+    - name: lowercase artifact suffix
+      run: |
+        artifact_suffix=${{matrix.BUILD_TYPE}}
+        artifact_suffix=$(echo $artifact_suffix | tr '[:upper:]' '[:lower:]')
+        echo "linux_artifact=pocolib_linux_x64_$artifact_suffix" >>${GITHUB_ENV}
+        echo "windows_artifact=pocolib_windows_x64_$artifact_suffix" >>${GITHUB_ENV}
+        echo "macos_artifact=pocolib_macos_$artifact_suffix" >>${GITHUB_ENV}
+        echo "android_artifact=pocolib_android_aarch64_$artifact_suffix" >>${GITHUB_ENV}
+    
     - uses: actions/checkout@v3
     - name: Configure CMake
       run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{matrix.BUILD_TYPE}} -DENABLE_XML=OFF -DENABLE_JSON=OFF -DENABLE_MONGODB=OFF -DENABLE_DATA_SQLITE=OFF -DENABLE_REDIS=OFF -DENABLE_PROMETHEUS=OFF -DENABLE_PDF=OFF -DENABLE_NET=OFF -DENABLE_ZIP=OFF -DENABLE_PAGECOMPILER=OFF -DENABLE_PAGECOMPILER_FILE2PAGE=OFF -DENABLE_ACTIVERECORD=OFF -DENABLE_ACTIVERECORD_COMPILER=OFF -DENABLE_DATA=OFF -DENABLE_DATA_ODBC=OFF -DENABLE_DATA_POSTGRESQL=OFF -DENABLE_DATA_MYSQL=OFF -DENABLE_APACHECONNECTOR=OFF -DENABLE_NETSSL=OFF -DENABLE_CRYPTO=OFF -DENABLE_JWT=OFF -DENABLE_ENCODINGS=OFF
     - name: Build
       run: cmake --build ${{github.workspace}}/build --config ${{matrix.BUILD_TYPE}}
       
+    - shell: bash
+      run: |
+        mkdir ${{env.linux_artifact}}
+        mkdir ${{env.linux_artifact}}/Foundation
+        mkdir ${{env.linux_artifact}}/Util
+        cp -r build/lib ${{env.linux_artifact}}
+        cp -r Foundation/include ${{env.linux_artifact}}/Foundation
+        cp -r Util/include ${{env.linux_artifact}}/Util
+        tar cvzf ${{env.linux_artifact}}.tar.gz ${{env.linux_artifact}}
+  
+  
     - uses: actions/upload-artifact@v3
       with:
-        name: pocolib_linux_x64_${{matrix.BUILD_TYPE}}
-        path: |
-          build/lib/**
-          Foundation/include/**
-          Util/include/**
+        name: ${{env.linux_artifact}}
+        path: ${{env.linux_artifact}}.tar.gz
+          
+          
+    - uses: actions/download-artifact@v3
+      with:
+        name: ${{env.linux_artifact}}
+        
+      
+    - uses: actions/setup-java@v3
+      with:
+        java-version: '11'
+        distribution: 'zulu'
+        
+    - name: maven
+      run: |
+        mvn deploy:deploy-file -DgroupId=eu.filekeep -DartifactId=${{env.linux_artifact}} -Dversion=${GITHUB_RUN_NUMBER} -Dfile=${{env.linux_artifact}}.tar.gz -DrepositoryId=github -Durl=https://maven.pkg.github.com/wullacken/poco -packaging=tar.gz
+        
 
   build_windows:
     runs-on: windows-2022
@@ -40,13 +76,36 @@ jobs:
     - name: Build
       run: cmake --build ${{github.workspace}}/build --config ${{matrix.BUILD_TYPE}}
       
+    - shell: bash
+      run: |
+        mkdir ${{env.windows_artifact}}
+        mkdir ${{env.windows_artifact}}/Foundation
+        mkdir ${{env.windows_artifact}}/Util
+        cp -r build/lib ${{env.windows_artifact}}
+        cp -r Foundation/include ${{env.windows_artifact}}/Foundation
+        cp -r Util/include ${{env.windows_artifact}}/Util
+        tar cvzf ${{env.windows_artifact}}.tar.gz ${{env.windows_artifact}}
+      
+  
     - uses: actions/upload-artifact@v3
       with:
-        name: pocolib_windows_x64_${{matrix.BUILD_TYPE}}
-        path: |
-          build/lib/**
-          Foundation/include/**
-          Util/include/**
+        name: ${{env.windows_artifact}}
+        path: ${{env.windows_artifact}}.tar.gz
+          
+          
+    - uses: actions/download-artifact@v3
+      with:
+        name: ${{env.windows_artifact}}
+        
+      
+    - uses: actions/setup-java@v3
+      with:
+        java-version: '11'
+        distribution: 'zulu'
+        
+    - name: maven
+      run: |
+        mvn deploy:deploy-file -DgroupId=eu.filekeep -DartifactId=${{env.windows_artifact}} -Dversion=${GITHUB_RUN_NUMBER} -Dfile=${{env.windows_artifact}}.tar.gz -DrepositoryId=github -Durl=https://maven.pkg.github.com/wullacken/poco -packaging=tar.gz
           
           
           
@@ -62,13 +121,36 @@ jobs:
     - name: Build
       run: cmake --build ${{github.workspace}}/build --config ${{matrix.BUILD_TYPE}}
       
+    - shell: bash
+      run: |
+        mkdir ${{env.macos_artifact}}
+        mkdir ${{env.macos_artifact}}/Foundation
+        mkdir ${{env.macos_artifact}}/Util
+        cp -r build/lib ${{env.macos_artifact}}
+        cp -r Foundation/include ${{env.macos_artifact}}/Foundation
+        cp -r Util/include ${{env.macos_artifact}}/Util
+        tar cvzf ${{env.macos_artifact}}.tar.gz ${{env.macos_artifact}}
+      
+
     - uses: actions/upload-artifact@v3
       with:
-        name: pocolib_macos_${{matrix.BUILD_TYPE}}
-        path: |
-          build/lib/**
-          Foundation/include/**
-          Util/include/**
+        name: ${{env.macos_artifact}}
+        path: ${{env.macos_artifact}}.tar.gz
+          
+          
+    - uses: actions/download-artifact@v3
+      with:
+        name: ${{env.macos_artifact}}
+        
+      
+    - uses: actions/setup-java@v3
+      with:
+        java-version: '11'
+        distribution: 'zulu'
+        
+    - name: maven
+      run: |
+        mvn deploy:deploy-file -DgroupId=eu.filekeep -DartifactId=${{env.macos_artifact}} -Dversion=${GITHUB_RUN_NUMBER} -Dfile=${{env.macos_artifact}}.tar.gz -DrepositoryId=github -Durl=https://maven.pkg.github.com/wullacken/poco -packaging=tar.gz
           
           
 
@@ -108,13 +190,36 @@ jobs:
         ${CMAKE_PATH}/bin/cmake -B ${{github.workspace}}/build -G Ninja -DPOCO_ANDROID=ON -DPOCO_NO_FPENVIRONMENT=ON -DPOCO_NO_WSTRING=ON -DPOCO_NO_SHAREDMEMORY=ON -DCMAKE_MAKE_PROGRAM=${NINJA_EXE} -DCMAKE_TOOLCHAIN_FILE=${ANDROID_TOOLCHAIN_FILE} -DANDROID_NATIVE_API_LEVEL=26 -DANDROID_ABI=arm64-v8a -DCMAKE_BUILD_TYPE=${{matrix.BUILD_TYPE}} -DENABLE_XML=OFF -DENABLE_JSON=OFF -DENABLE_MONGODB=OFF -DENABLE_DATA_SQLITE=OFF -DENABLE_REDIS=OFF -DENABLE_PROMETHEUS=OFF -DENABLE_PDF=OFF -DENABLE_NET=OFF -DENABLE_ZIP=OFF -DENABLE_PAGECOMPILER=OFF -DENABLE_PAGECOMPILER_FILE2PAGE=OFF -DENABLE_ACTIVERECORD=OFF -DENABLE_ACTIVERECORD_COMPILER=OFF -DENABLE_DATA=OFF -DENABLE_DATA_ODBC=OFF -DENABLE_DATA_POSTGRESQL=OFF -DENABLE_DATA_MYSQL=OFF -DENABLE_APACHECONNECTOR=OFF -DENABLE_NETSSL=OFF -DENABLE_CRYPTO=OFF -DENABLE_JWT=OFF -DENABLE_ENCODINGS=OFF
         ${CMAKE_PATH}/bin/cmake --build ${{github.workspace}}/build --config ${{matrix.BUILD_TYPE}}
         
+    - shell: bash
+      run: |
+        mkdir ${{env.android_artifact}}
+        mkdir ${{env.android_artifact}}/Foundation
+        mkdir ${{env.android_artifact}}/Util
+        cp -r build/lib ${{env.android_artifact}}
+        cp -r Foundation/include ${{env.android_artifact}}/Foundation
+        cp -r Util/include ${{env.android_artifact}}/Util
+        tar cvzf ${{env.android_artifact}}.tar.gz ${{env.android_artifact}}
+      
+
     - uses: actions/upload-artifact@v3
       with:
-        name: pocolib_android_${{matrix.BUILD_TYPE}}
-        path: |
-          build/lib/**
-          Foundation/include/**
-          Util/include/**
+        name: ${{env.android_artifact}}
+        path: ${{env.android_artifact}}.tar.gz
+          
+          
+    - uses: actions/download-artifact@v3
+      with:
+        name: ${{env.android_artifact}}
+        
+      
+    - uses: actions/setup-java@v3
+      with:
+        java-version: '11'
+        distribution: 'zulu'
+        
+    - name: maven
+      run: |
+        mvn deploy:deploy-file -DgroupId=eu.filekeep -DartifactId=${{env.android_artifact}} -Dversion=${GITHUB_RUN_NUMBER} -Dfile=${{env.android_artifact}}.tar.gz -DrepositoryId=github -Durl=https://maven.pkg.github.com/wullacken/poco -packaging=tar.gz
         
         
         
