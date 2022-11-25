@@ -22,9 +22,6 @@ jobs:
         artifact_suffix=${{matrix.BUILD_TYPE}}
         artifact_suffix=$(echo $artifact_suffix | tr '[:upper:]' '[:lower:]')
         echo "linux_artifact=pocolib_linux_x64_$artifact_suffix" >>${GITHUB_ENV}
-        echo "windows_artifact=pocolib_windows_x64_$artifact_suffix" >>${GITHUB_ENV}
-        echo "macos_artifact=pocolib_macos_$artifact_suffix" >>${GITHUB_ENV}
-        echo "android_artifact=pocolib_android_aarch64_$artifact_suffix" >>${GITHUB_ENV}
     
     - uses: actions/checkout@v3
     - name: Configure CMake
@@ -70,6 +67,13 @@ jobs:
       matrix:
         BUILD_TYPE: [Release,Debug]
     steps:
+    
+    - name: lowercase artifact suffix
+      run: |
+        artifact_suffix=${{matrix.BUILD_TYPE}}
+        artifact_suffix=$(echo $artifact_suffix | tr '[:upper:]' '[:lower:]')
+        echo "windows_artifact=pocolib_windows_x64_$artifact_suffix" >>${GITHUB_ENV}
+    
     - uses: actions/checkout@v3
     - name: Configure CMake
       run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{matrix.BUILD_TYPE}} -DENABLE_XML=OFF -DENABLE_JSON=OFF -DENABLE_MONGODB=OFF -DENABLE_DATA_SQLITE=OFF -DENABLE_REDIS=OFF -DENABLE_PROMETHEUS=OFF -DENABLE_PDF=OFF -DENABLE_NET=OFF -DENABLE_ZIP=OFF -DENABLE_PAGECOMPILER=OFF -DENABLE_PAGECOMPILER_FILE2PAGE=OFF -DENABLE_ACTIVERECORD=OFF -DENABLE_ACTIVERECORD_COMPILER=OFF -DENABLE_DATA=OFF -DENABLE_DATA_ODBC=OFF -DENABLE_DATA_POSTGRESQL=OFF -DENABLE_DATA_MYSQL=OFF -DENABLE_APACHECONNECTOR=OFF -DENABLE_NETSSL=OFF -DENABLE_CRYPTO=OFF -DENABLE_JWT=OFF -DENABLE_ENCODINGS=OFF
@@ -115,6 +119,13 @@ jobs:
       matrix:
         BUILD_TYPE: [Release,Debug]
     steps:
+    
+    - name: lowercase artifact suffix
+      run: |
+        artifact_suffix=${{matrix.BUILD_TYPE}}
+        artifact_suffix=$(echo $artifact_suffix | tr '[:upper:]' '[:lower:]')
+        echo "macos_artifact=pocolib_macos_$artifact_suffix" >>${GITHUB_ENV}
+    
     - uses: actions/checkout@v3
     - name: Configure CMake
       run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{matrix.BUILD_TYPE}} -DENABLE_XML=OFF -DENABLE_JSON=OFF -DENABLE_MONGODB=OFF -DENABLE_DATA_SQLITE=OFF -DENABLE_REDIS=OFF -DENABLE_PROMETHEUS=OFF -DENABLE_PDF=OFF -DENABLE_NET=OFF -DENABLE_ZIP=OFF -DENABLE_PAGECOMPILER=OFF -DENABLE_PAGECOMPILER_FILE2PAGE=OFF -DENABLE_ACTIVERECORD=OFF -DENABLE_ACTIVERECORD_COMPILER=OFF -DENABLE_DATA=OFF -DENABLE_DATA_ODBC=OFF -DENABLE_DATA_POSTGRESQL=OFF -DENABLE_DATA_MYSQL=OFF -DENABLE_APACHECONNECTOR=OFF -DENABLE_NETSSL=OFF -DENABLE_CRYPTO=OFF -DENABLE_JWT=OFF -DENABLE_ENCODINGS=OFF
@@ -160,6 +171,13 @@ jobs:
       matrix:
         BUILD_TYPE: [Release]
     steps:
+    
+    - name: lowercase artifact suffix
+      run: |
+        artifact_suffix=${{matrix.BUILD_TYPE}}
+        artifact_suffix=$(echo $artifact_suffix | tr '[:upper:]' '[:lower:]')
+        echo "android_artifact=pocolib_android_aarch64_$artifact_suffix" >>${GITHUB_ENV}
+    
     - uses: actions/checkout@v3
     
     - name: Set up JDK 1.8
