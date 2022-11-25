@@ -23,8 +23,9 @@ jobs:
     
     - name: lowercase artifact id
       run: |
-         echo "artifact=pocolib_linux_x64_${{{matrix.BUILD_TYPE}},,}" >>${GITHUB_ENV}
-         echo ${{env.artifact}}
+        artifact=pocolib_linux_x64_${{matrix.BUILD_TYPE}}
+        echo "artifact=${$artifact,,}" >>${GITHUB_ENV}
+        echo ${{env.artifact}}
     
     - uses: actions/checkout@v3
     - name: Configure CMake
