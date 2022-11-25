@@ -58,7 +58,7 @@ jobs:
         
     - name: maven
       run: |
-        mvn deploy:deploy-file -DgroupId=eu.filekeep -DartifactId=${{env.linux_artifact}} -Dversion=${GITHUB_RUN_NUMBER} -Dfile=${{env.linux_artifact}}.tar.gz -DrepositoryId=github -Durl=https://maven.pkg.github.com/wullacken/poco -packaging=tar.gz
+        mvn deploy:deploy-file -DgroupId=eu.filekeep -DartifactId=${{env.linux_artifact}} -Dversion=${GITHUB_RUN_NUMBER} -Dfile=${{env.linux_artifact}}.tar.gz -DrepositoryId=github -Durl=https://maven.pkg.github.com/wullacken/poco -Dpackaging=tar.gz
         
 
   build_windows:
@@ -109,7 +109,7 @@ jobs:
         
     - name: maven
       run: |
-        mvn deploy:deploy-file -DgroupId=eu.filekeep -DartifactId=${{env.windows_artifact}} -Dversion=${GITHUB_RUN_NUMBER} -Dfile=${{env.windows_artifact}}.tar.gz -DrepositoryId=github -Durl=https://maven.pkg.github.com/wullacken/poco -packaging=tar.gz
+        mvn deploy:deploy-file -DgroupId=eu.filekeep -DartifactId=${{env.windows_artifact}} -Dversion=${GITHUB_RUN_NUMBER} -Dfile=${{env.windows_artifact}}.tar.gz -DrepositoryId=github -Durl=https://maven.pkg.github.com/wullacken/poco -Dpackaging=tar.gz
           
           
           
@@ -161,7 +161,7 @@ jobs:
         
     - name: maven
       run: |
-        mvn deploy:deploy-file -DgroupId=eu.filekeep -DartifactId=${{env.macos_artifact}} -Dversion=${GITHUB_RUN_NUMBER} -Dfile=${{env.macos_artifact}}.tar.gz -DrepositoryId=github -Durl=https://maven.pkg.github.com/wullacken/poco -packaging=tar.gz
+        mvn deploy:deploy-file -DgroupId=eu.filekeep -DartifactId=${{env.macos_artifact}} -Dversion=${GITHUB_RUN_NUMBER} -Dfile=${{env.macos_artifact}}.tar.gz -DrepositoryId=github -Durl=https://maven.pkg.github.com/wullacken/poco -Dpackaging=tar.gz
           
           
 
@@ -237,7 +237,8 @@ jobs:
         
     - name: maven
       run: |
-        mvn deploy:deploy-file -DgroupId=eu.filekeep -DartifactId=${{env.android_artifact}} -Dversion=${GITHUB_RUN_NUMBER} -Dfile=${{env.android_artifact}}.tar.gz -DrepositoryId=github -Durl=https://maven.pkg.github.com/wullacken/poco -packaging=tar.gz
+        mvn deploy:deploy-file -DgroupId=eu.filekeep -DartifactId=${{env.android_artifact}} -Dversion=${GITHUB_RUN_NUMBER} -Dfile=${{env.android_artifact}}.tar.gz -DrepositoryId=github -Durl=https://maven.pkg.github.com/wullacken/poco -D
+        packaging=tar.gz
         
         
         
