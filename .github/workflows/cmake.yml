@@ -173,7 +173,7 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        BUILD_TYPE: [Release]
+        BUILD_TYPE: [Release,Debug]
     steps:
     
     - name: lowercase artifact suffix
