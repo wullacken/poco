@@ -26,7 +26,6 @@ jobs:
         artifact=pocolib_linux_x64_${{matrix.BUILD_TYPE}}
         artifact=$(echo $artifact | tr '[:upper:]' '[:lower:]')
         echo "artifact=$artifact" >>${GITHUB_ENV}
-        echo ${{env.artifact}}
     
     - uses: actions/checkout@v3
     - name: Configure CMake
@@ -63,7 +62,7 @@ jobs:
         
     - name: maven
       run: |
-        mvn deploy:deploy-file -DgroupId=eu.filekeep -DartifactId=${{env.artifact}} -Dversion=${GITHUB_RUN_NUMBER} -Dfile=${{env.artifact}}.tar.gz -DrepositoryId=github -Durl=https://maven.pkg.github.com/wullacken/poco_linux
+        mvn deploy:deploy-file -DgroupId=eu.filekeep -DartifactId=${{env.artifact}} -Dversion=${GITHUB_RUN_NUMBER} -Dfile=${{env.artifact}}.tar.gz -DrepositoryId=github -Durl=https://maven.pkg.github.com/wullacken/poco
 
 
         
