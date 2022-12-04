@@ -35,9 +35,9 @@ jobs:
         mkdir ${{env.linux_artifact}}
         mkdir ${{env.linux_artifact}}/Foundation
         mkdir ${{env.linux_artifact}}/Util
-        cp -r build/lib ${{env.linux_artifact}}
-        cp -r Foundation/include ${{env.linux_artifact}}/Foundation
-        cp -r Util/include ${{env.linux_artifact}}/Util
+        cp -a build/lib ${{env.linux_artifact}}
+        cp -a Foundation/include ${{env.linux_artifact}}/Foundation
+        cp -a Util/include ${{env.linux_artifact}}/Util
         tar cvzf ${{env.linux_artifact}}.tar.gz ${{env.linux_artifact}}
   
   
@@ -87,9 +87,9 @@ jobs:
         mkdir ${{env.windows_artifact}}
         mkdir ${{env.windows_artifact}}/Foundation
         mkdir ${{env.windows_artifact}}/Util
-        cp -r build/lib ${{env.windows_artifact}}
-        cp -r Foundation/include ${{env.windows_artifact}}/Foundation
-        cp -r Util/include ${{env.windows_artifact}}/Util
+        cp -a build/lib ${{env.windows_artifact}}
+        cp -a Foundation/include ${{env.windows_artifact}}/Foundation
+        cp -a Util/include ${{env.windows_artifact}}/Util
         tar cvzf ${{env.windows_artifact}}.tar.gz ${{env.windows_artifact}}
       
   
@@ -141,9 +141,9 @@ jobs:
         mkdir ${{env.macos_artifact}}
         mkdir ${{env.macos_artifact}}/Foundation
         mkdir ${{env.macos_artifact}}/Util
-        cp -r build/lib ${{env.macos_artifact}}
-        cp -r Foundation/include ${{env.macos_artifact}}/Foundation
-        cp -r Util/include ${{env.macos_artifact}}/Util
+        cp -a build/lib ${{env.macos_artifact}}
+        cp -a Foundation/include ${{env.macos_artifact}}/Foundation
+        cp -a Util/include ${{env.macos_artifact}}/Util
         tar cvzf ${{env.macos_artifact}}.tar.gz ${{env.macos_artifact}}
       
 
@@ -219,9 +219,9 @@ jobs:
         mkdir ${{env.android_artifact}}
         mkdir ${{env.android_artifact}}/Foundation
         mkdir ${{env.android_artifact}}/Util
-        cp -r build/lib ${{env.android_artifact}}
-        cp -r Foundation/include ${{env.android_artifact}}/Foundation
-        cp -r Util/include ${{env.android_artifact}}/Util
+        cp -a build/lib ${{env.android_artifact}}
+        cp -a Foundation/include ${{env.android_artifact}}/Foundation
+        cp -a Util/include ${{env.android_artifact}}/Util
         tar cvzf ${{env.android_artifact}}.tar.gz ${{env.android_artifact}}
       
 
