@@ -38,7 +38,7 @@ jobs:
         cp -a build/lib ${{env.linux_artifact}}
         cp -a Foundation/include ${{env.linux_artifact}}/Foundation
         cp -a Util/include ${{env.linux_artifact}}/Util
-        tar cvzf ${{env.linux_artifact}}.tar.gz ${{env.linux_artifact}}
+        tar chvzf ${{env.linux_artifact}}.tar.gz ${{env.linux_artifact}}
   
   
     - uses: actions/upload-artifact@v3
@@ -90,7 +90,7 @@ jobs:
         cp -a build/lib ${{env.windows_artifact}}
         cp -a Foundation/include ${{env.windows_artifact}}/Foundation
         cp -a Util/include ${{env.windows_artifact}}/Util
-        tar cvzf ${{env.windows_artifact}}.tar.gz ${{env.windows_artifact}}
+        tar chvzf ${{env.windows_artifact}}.tar.gz ${{env.windows_artifact}}
       
   
     - uses: actions/upload-artifact@v3
@@ -144,7 +144,7 @@ jobs:
         cp -a build/lib ${{env.macos_artifact}}
         cp -a Foundation/include ${{env.macos_artifact}}/Foundation
         cp -a Util/include ${{env.macos_artifact}}/Util
-        tar cvzf ${{env.macos_artifact}}.tar.gz ${{env.macos_artifact}}
+        tar chvzf ${{env.macos_artifact}}.tar.gz ${{env.macos_artifact}}
       
 
     - uses: actions/upload-artifact@v3
@@ -222,7 +222,7 @@ jobs:
         cp -a build/lib ${{env.android_artifact}}
         cp -a Foundation/include ${{env.android_artifact}}/Foundation
         cp -a Util/include ${{env.android_artifact}}/Util
-        tar cvzf ${{env.android_artifact}}.tar.gz ${{env.android_artifact}}
+        tar chvzf ${{env.android_artifact}}.tar.gz ${{env.android_artifact}}
       
 
     - uses: actions/upload-artifact@v3
